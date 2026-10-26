@@ -1,0 +1,20 @@
+# Core data handling
+pandas>=2.0
+numpy>=1.24
+
+# Static plotting (used in the analysis notebook)
+matplotlib>=3.8
+seaborn>=0.13
+
+# Interactive plotting (used in the Streamlit dashboard)
+plotly>=5.20
+
+# Dashboard
+streamlit>=1.30
+
+# Time-series forecasting
+statsmodels>=0.14
+
+# Running the notebook
+jupyter>=1.0
+ipykernel>=6.25
