@@ -1,7 +1,7 @@
 
 """
 Superstore Sales Analytics
-Native Streamlit dashboard with colorful Plotly visualizations.
+Native Streamlit dashboard with default Plotly chart styling.
 
 Run from project root:
     streamlit run dashboard/app.py
@@ -45,150 +45,13 @@ st.set_page_config(
 
 
 # ============================================================
-# 3. PLOTLY COLOR PALETTE
+# 3. CHART FUNCTION
 # ============================================================
-
-COLORS = {
-    "background": "#09090b",
-    "card": "#111113",
-    "border": "#27272a",
-    "text": "#fafafa",
-    "muted": "#a1a1aa",
-    "indigo": "#818cf8",
-    "blue": "#3b82f6",
-    "cyan": "#06b6d4",
-    "green": "#22c55e",
-    "amber": "#f59e0b",
-    "pink": "#ec4899",
-    "purple": "#a78bfa",
-    "orange": "#f97316",
-    "teal": "#14b8a6",
-    "red": "#ef4444",
-}
-
-PALETTE = [
-    COLORS["indigo"],
-    COLORS["cyan"],
-    COLORS["green"],
-    COLORS["amber"],
-    COLORS["pink"],
-    COLORS["purple"],
-    COLORS["orange"],
-    COLORS["teal"],
-    COLORS["red"],
-    COLORS["blue"],
-]
-
-
-# ============================================================
-# 4. PLOTLY CHART THEME
-# ============================================================
-
-# This is Plotly chart configuration, not CSS.
-# It only controls the appearance of Plotly visualizations.
-
-CHART_TEMPLATE = go.layout.Template(
-    layout=go.Layout(
-        paper_bgcolor="#111113",
-        plot_bgcolor="#111113",
-        font=dict(
-            family="Arial, sans-serif",
-            color="#a1a1aa",
-            size=12,
-        ),
-        title=dict(
-            font=dict(
-                size=15,
-                color="#fafafa",
-            ),
-            x=0.02,
-            xanchor="left",
-        ),
-        xaxis=dict(
-            showgrid=False,
-            zeroline=False,
-            showline=False,
-            tickfont=dict(
-                size=10,
-                color="#a1a1aa",
-            ),
-            title_font=dict(
-                size=11,
-                color="#a1a1aa",
-            ),
-        ),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor="#27272a",
-            gridwidth=1,
-            zeroline=False,
-            showline=False,
-            tickfont=dict(
-                size=10,
-                color="#a1a1aa",
-            ),
-            title_font=dict(
-                size=11,
-                color="#a1a1aa",
-            ),
-        ),
-        legend=dict(
-            bgcolor="rgba(0,0,0,0)",
-            font=dict(
-                size=11,
-                color="#d4d4d8",
-            ),
-        ),
-        margin=dict(
-            l=25,
-            r=20,
-            t=55,
-            b=30,
-        ),
-        hoverlabel=dict(
-            bgcolor="#18181b",
-            bordercolor="#3f3f46",
-            font=dict(
-                color="#fafafa",
-                size=12,
-            ),
-        ),
-        colorway=PALETTE,
-    )
-)
-
-px.defaults.template = CHART_TEMPLATE
-px.defaults.color_discrete_sequence = PALETTE
-
-
-def style_chart(fig, height=380):
-    """Apply consistent Plotly chart styling."""
-
-    fig.update_layout(
-        template=CHART_TEMPLATE,
-        height=height,
-        autosize=True,
-        paper_bgcolor="#111113",
-        plot_bgcolor="#111113",
-        font=dict(
-            family="Arial, sans-serif",
-            color="#a1a1aa",
-        ),
-        margin=dict(
-            l=25,
-            r=20,
-            t=55,
-            b=30,
-        ),
-    )
-
-    return fig
-
 
 def chart(fig, height=380, key=None):
-    """Render a responsive Plotly chart."""
+    """Render Plotly charts using default styling."""
 
-    style_chart(fig, height=height)
+    fig.update_layout(height=height)
 
     st.plotly_chart(
         fig,
@@ -196,17 +59,13 @@ def chart(fig, height=380, key=None):
         config={
             "displaylogo": False,
             "responsive": True,
-            "modeBarButtonsToRemove": [
-                "lasso2d",
-                "select2d",
-            ],
         },
         key=key,
     )
 
 
 # ============================================================
-# 5. DATA LOADING
+# 4. DATA LOADING
 # ============================================================
 
 @st.cache_data
@@ -224,7 +83,7 @@ if df.empty:
 
 
 # ============================================================
-# 6. SIDEBAR
+# 5. SIDEBAR
 # ============================================================
 
 with st.sidebar:
@@ -258,34 +117,22 @@ with st.sidebar:
 
     regions = st.multiselect(
         "Region",
-        options=sorted(
-            df["Region"].dropna().unique()
-        ),
-        default=sorted(
-            df["Region"].dropna().unique()
-        ),
+        options=sorted(df["Region"].dropna().unique()),
+        default=sorted(df["Region"].dropna().unique()),
         placeholder="Select regions",
     )
 
     categories = st.multiselect(
         "Category",
-        options=sorted(
-            df["Category"].dropna().unique()
-        ),
-        default=sorted(
-            df["Category"].dropna().unique()
-        ),
+        options=sorted(df["Category"].dropna().unique()),
+        default=sorted(df["Category"].dropna().unique()),
         placeholder="Select categories",
     )
 
     segments = st.multiselect(
         "Customer Segment",
-        options=sorted(
-            df["Segment"].dropna().unique()
-        ),
-        default=sorted(
-            df["Segment"].dropna().unique()
-        ),
+        options=sorted(df["Segment"].dropna().unique()),
+        default=sorted(df["Segment"].dropna().unique()),
         placeholder="Select customer segments",
     )
 
@@ -304,14 +151,13 @@ with st.sidebar:
 
 
 # ============================================================
-# 7. FILTER DATA
+# 6. FILTER DATA
 # ============================================================
 
 if isinstance(date_range, (tuple, list)) and len(date_range) == 2:
 
     start_date = pd.Timestamp(date_range[0])
 
-    # Include all orders on the selected ending date.
     end_date = (
         pd.Timestamp(date_range[1])
         + pd.Timedelta(days=1)
@@ -347,7 +193,7 @@ if filtered.empty:
 
 
 # ============================================================
-# 8. PAGE HEADER
+# 7. PAGE HEADER
 # ============================================================
 
 st.title("Sales Dashboard")
@@ -363,7 +209,7 @@ st.divider()
 
 
 # ============================================================
-# 9. KPI CARDS
+# 8. KPI CARDS
 # ============================================================
 
 kpis = sa.kpi_summary(filtered)
@@ -371,7 +217,6 @@ kpis = sa.kpi_summary(filtered)
 col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
-
     st.metric(
         "Total Sales",
         f"${kpis['total_sales']:,.0f}",
@@ -379,7 +224,6 @@ with col1:
     )
 
 with col2:
-
     st.metric(
         "Total Profit",
         f"${kpis['total_profit']:,.0f}",
@@ -387,7 +231,6 @@ with col2:
     )
 
 with col3:
-
     st.metric(
         "Profit Margin",
         f"{kpis['overall_profit_margin'] * 100:.1f}%",
@@ -395,7 +238,6 @@ with col3:
     )
 
 with col4:
-
     st.metric(
         "Orders",
         f"{kpis['total_orders']:,}",
@@ -403,7 +245,6 @@ with col4:
     )
 
 with col5:
-
     st.metric(
         "Avg. Order Value",
         f"${kpis['avg_order_value']:,.0f}",
@@ -415,7 +256,7 @@ st.divider()
 
 
 # ============================================================
-# 10. ANALYTICS TABS
+# 9. ANALYTICS TABS
 # ============================================================
 
 tab_trends, tab_products, tab_customers, tab_geo, tab_forecast = (
@@ -454,17 +295,7 @@ with tab_trends:
             y=ts["Sales"],
             name="Sales",
             mode="lines",
-            line=dict(
-                color="#818cf8",
-                width=3,
-            ),
             fill="tozeroy",
-            fillcolor="rgba(129,140,248,0.12)",
-            hovertemplate=(
-                "<b>Sales</b><br>"
-                "$%{y:,.2f}"
-                "<extra></extra>"
-            ),
         )
     )
 
@@ -474,22 +305,11 @@ with tab_trends:
             y=ts["Profit"],
             name="Profit",
             mode="lines",
-            line=dict(
-                color="#22c55e",
-                width=2.5,
-            ),
-            hovertemplate=(
-                "<b>Profit</b><br>"
-                "$%{y:,.2f}"
-                "<extra></extra>"
-            ),
         )
     )
 
     fig.update_layout(
         hovermode="x unified",
-        yaxis_tickprefix="$",
-        yaxis_tickformat="~s",
     )
 
     chart(
@@ -513,32 +333,10 @@ with tab_trends:
         disc,
         x="Discount Bucket",
         y="Avg_Profit_Margin",
-        color="Avg_Profit_Margin",
-        color_continuous_scale=[
-            "#ef4444",
-            "#f97316",
-            "#f59e0b",
-            "#84cc16",
-            "#22c55e",
-        ],
         labels={
             "Discount Bucket": "Discount range",
             "Avg_Profit_Margin": "Average profit margin",
         },
-    )
-
-    fig2.update_layout(
-        coloraxis_showscale=False,
-        yaxis_tickformat=".0%",
-    )
-
-    fig2.update_traces(
-        marker_line_width=0,
-        hovertemplate=(
-            "Discount: %{x}<br>"
-            "Average margin: %{y:.1%}"
-            "<extra></extra>"
-        ),
     )
 
     chart(
@@ -574,30 +372,6 @@ with tab_products:
             names="Category",
             values="Sales",
             hole=0.65,
-            color_discrete_sequence=[
-                "#818cf8",
-                "#06b6d4",
-                "#f59e0b",
-                "#22c55e",
-                "#ec4899",
-            ],
-        )
-
-        fig3.update_traces(
-            textposition="inside",
-            textinfo="percent",
-            marker=dict(
-                line=dict(
-                    color="#111113",
-                    width=3,
-                )
-            ),
-            hovertemplate=(
-                "<b>%{label}</b><br>"
-                "Sales: $%{value:,.2f}<br>"
-                "Share: %{percent}"
-                "<extra></extra>"
-            ),
         )
 
         chart(
@@ -615,30 +389,6 @@ with tab_products:
             names="Category",
             values="Profit",
             hole=0.65,
-            color_discrete_sequence=[
-                "#22c55e",
-                "#818cf8",
-                "#f59e0b",
-                "#06b6d4",
-                "#ec4899",
-            ],
-        )
-
-        fig4.update_traces(
-            textposition="inside",
-            textinfo="percent",
-            marker=dict(
-                line=dict(
-                    color="#111113",
-                    width=3,
-                )
-            ),
-            hovertemplate=(
-                "<b>%{label}</b><br>"
-                "Profit: $%{value:,.2f}<br>"
-                "Share: %{percent}"
-                "<extra></extra>"
-            ),
         )
 
         chart(
@@ -665,13 +415,6 @@ with tab_products:
             x=subcat["Sub-Category"],
             y=subcat["Sales"],
             name="Sales",
-            marker_color="#818cf8",
-            marker_line_width=0,
-            hovertemplate=(
-                "<b>%{x}</b><br>"
-                "Sales: $%{y:,.2f}"
-                "<extra></extra>"
-            ),
         )
     )
 
@@ -680,22 +423,11 @@ with tab_products:
             x=subcat["Sub-Category"],
             y=subcat["Profit"],
             name="Profit",
-            marker_color="#22c55e",
-            marker_line_width=0,
-            hovertemplate=(
-                "<b>%{x}</b><br>"
-                "Profit: $%{y:,.2f}"
-                "<extra></extra>"
-            ),
         )
     )
 
     fig5.update_layout(
         barmode="group",
-        height=440,
-        xaxis_tickangle=-35,
-        yaxis_tickprefix="$",
-        yaxis_tickformat="~s",
     )
 
     chart(
@@ -749,25 +481,10 @@ with tab_customers:
             x="Segment",
             y="Customers",
             color="Segment",
-            color_discrete_sequence=PALETTE,
             labels={
                 "Segment": "Customer segment",
                 "Customers": "Number of customers",
             },
-        )
-
-        fig6.update_layout(
-            showlegend=False,
-            xaxis_tickangle=-25,
-        )
-
-        fig6.update_traces(
-            marker_line_width=0,
-            hovertemplate=(
-                "<b>%{x}</b><br>"
-                "Customers: %{y:,}"
-                "<extra></extra>"
-            ),
         )
 
         chart(
@@ -787,33 +504,11 @@ with tab_customers:
             color="Segment",
             size="Recency",
             hover_data=["Customer_Name"],
-            color_discrete_sequence=PALETTE,
             labels={
                 "Frequency": "Purchase frequency",
                 "Monetary": "Monetary value ($)",
                 "Recency": "Recency",
             },
-        )
-
-        fig7.update_traces(
-            marker=dict(
-                opacity=0.8,
-                line=dict(
-                    width=0.5,
-                    color="#111113",
-                ),
-            ),
-            hovertemplate=(
-                "<b>%{hovertext}</b><br>"
-                "Frequency: %{x}<br>"
-                "Monetary value: $%{y:,.2f}"
-                "<extra></extra>"
-            ),
-        )
-
-        fig7.update_layout(
-            yaxis_tickprefix="$",
-            yaxis_tickformat="~s",
         )
 
         chart(
@@ -853,62 +548,17 @@ with tab_geo:
 
     geo = ga.state_summary(filtered)
 
-    if metric == "Profit":
-
-        map_colors = [
-            "#7f1d1d",
-            "#ef4444",
-            "#f59e0b",
-            "#84cc16",
-            "#22c55e",
-        ]
-
-    else:
-
-        map_colors = [
-            "#172554",
-            "#1d4ed8",
-            "#3b82f6",
-            "#06b6d4",
-            "#a5f3fc",
-        ]
-
     fig8 = px.choropleth(
         geo,
         locations="State Code",
         locationmode="USA-states",
         color=metric,
         scope="usa",
-        color_continuous_scale=map_colors,
         hover_name="State",
         labels={
             "State Code": "State",
             metric: metric,
         },
-    )
-
-    fig8.update_layout(
-        height=530,
-        geo=dict(
-            bgcolor="#111113",
-            lakecolor="#111113",
-            showlakes=True,
-            subunitcolor="#27272a",
-            countrycolor="#27272a",
-        ),
-        coloraxis_colorbar=dict(
-            tickfont=dict(
-                color="#a1a1aa",
-                size=10,
-            ),
-            title=dict(
-                text=metric,
-                font=dict(
-                    color="#d4d4d8",
-                ),
-            ),
-            outlinecolor="#27272a",
-        ),
     )
 
     chart(
@@ -985,7 +635,7 @@ with tab_forecast:
             "Model: **Holt-Winters**"
         )
 
-    # Preserve the original behavior: use full history.
+    # Use full history to preserve the original forecast behavior.
     forecast_df = fc.forecast_sales(
         df,
         periods=horizon,
@@ -996,55 +646,11 @@ with tab_forecast:
         x="Date",
         y="Sales",
         color="Type",
-        color_discrete_map={
-            "Actual": "#06b6d4",
-            "Forecast": "#a78bfa",
-        },
         labels={
             "Date": "Date",
             "Sales": "Sales ($)",
             "Type": "Series",
         },
-    )
-
-    fig9.update_traces(
-        line=dict(width=2.8),
-    )
-
-    # Distinguish forecast from actual observations.
-    for trace in fig9.data:
-
-        if trace.name == "Actual":
-
-            trace.update(
-                line=dict(
-                    color="#06b6d4",
-                    width=2.8,
-                )
-            )
-
-        elif trace.name == "Forecast":
-
-            trace.update(
-                line=dict(
-                    color="#a78bfa",
-                    width=3,
-                    dash="dash",
-                )
-            )
-
-    fig9.update_layout(
-        height=480,
-        hovermode="x unified",
-        yaxis_tickprefix="$",
-        yaxis_tickformat="~s",
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1,
-        ),
     )
 
     chart(
@@ -1071,7 +677,7 @@ with tab_forecast:
 
 
 # ============================================================
-# 11. FOOTER
+# 10. FOOTER
 # ============================================================
 
 st.divider()
